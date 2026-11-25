@@ -8,7 +8,7 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Install Dependencies
-        run: sudo apt-get update && sudo apt-get install -y wget
+        run: sudo apt-get update && sudo apt-get install -y wget unzip
         
       - name: Download PVSnesLib
         run: |
@@ -36,18 +36,7 @@ jobs:
           }
           EOF
           
-          cat << 'EOF' > Makefile
-          ifeq ($(strip $(PVSNESLIB_HOME)),)
-          $(error "PVSNESLIB_HOME is not set")
-          endif
-          include ${PVSNESLIB_HOME}/devkitsnes/snes_rules
-          ROMNAME = pvz
-          CFILES = main.c
-          OBJFILES = $(CFILES:.c=.o)
-          all: $(ROMNAME).sfc
-          $(ROMNAME).sfc: $(OBJFILES)
-          	$(LD) $(OBJFILES) -o $(ROMNAME).sfc
-          EOF
+          printf 'ROMNAME = pvz\ninclude ${PVSNESLIB_HOME}/devkitsnes/snes_rules\nCFILES = main.c\nOBJFILES = $(CFILES:.c=.o)\nall: $(ROMNAME).sfc\n$(ROMNAME).sfc: $(OBJFILES)\n\t$(LD) $(OBJFILES) -o $(ROMNAME).sfc\n' > Makefile
           
           echo "" > data.asm
           
