@@ -57,9 +57,8 @@ jobs:
               u16 dummy_pal[16];
               for(i=0; i<16; i++) dummy_pal[i] = 0;
               
-              // FIX: OBJ_SIZE16_L32 is the correct hardware macro
-              oamInitGfxAttr(OBJ_SIZE16_L32, OBJ_SIZE16_L32);
-              oamInitGfxSet(dummy_tiles, 128, dummy_pal, 16, 0, 0);
+              // FIX: 7th parameter is OBJ_SIZE16_L32
+              oamInitGfxSet(dummy_tiles, 128, dummy_pal, 16, 0, 0, OBJ_SIZE16_L32);
 
               // Set colors for palettes (128 is the CGRAM offset for sprites)
               setPaletteColor(128 + 1, RGB5(31, 31, 31));  // Palette 0 (Cursor): White
