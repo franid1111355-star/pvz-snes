@@ -42,13 +42,13 @@ jobs:
           ifeq ($(strip $(PVSNESLIB_HOME)),)
           $(error "PVSNESLIB_HOME is not set")
           endif
-          
-          include ${PVSNESLIB_HOME}/devkitsnes/snes_rules
-          
+
           ROMNAME = pvz
+          include ${PVSNESLIB_HOME}/devkitsnes/snes_rules
+
           CFILES = main.c
           OBJFILES = $(CFILES:.c=.o)
-          
+
           all: $(ROMNAME).sfc
           EOF
           
@@ -56,13 +56,11 @@ jobs:
         run: |
           export PVSNESLIB_HOME=$(pwd)/pvsneslib
           make
+          echo "--- Files in directory ---"
           ls -la
-          find . -name "*.sfc"
           
       - name: Upload Finished ROM
         uses: actions/upload-artifact@v4
         with:
           name: pvz-snes-rom
-          path: |
-            *.sfc
-            **/*.sfc
+          path: "*.sfc"
