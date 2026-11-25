@@ -12,7 +12,7 @@ jobs:
         
       - name: Download PVSnesLib
         run: |
-          wget https://github.com/alekmaul/pvsneslib/releases/download/4.6.0/pvsneslib_460_64b_linux_release.zip
+          wget https://github.com/alekmaul/pvsneslib/releases/download/v4.6.0/pvsneslib_460_64b_linux_release.zip
           unzip pvsneslib_460_64b_linux_release.zip
           
       - name: Generate Game Files Automatically
@@ -36,17 +36,33 @@ jobs:
           }
           EOF
           
-          printf 'ROMNAME = pvz\ninclude ${PVSNESLIB_HOME}/devkitsnes/snes_rules\nCFILES = main.c\nOBJFILES = $(CFILES:.c=.o)\nall: $(ROMNAME).sfc\n$(ROMNAME).sfc: $(OBJFILES)\n\t$(LD) $(OBJFILES) -o $(ROMNAME).sfc\n' > Makefile
-          
           echo "" > data.asm
+          
+          cat << 'EOF' > Makefile
+          ifeq ($(strip $(PVSNESLIB_HOME)),)
+          $(error "PVSNESLIB_HOME is not set")
+          endif
+          
+          include ${PVSNESLIB_HOME}/devkitsnes/snes_rules
+          
+          ROMNAME = pvz
+          CFILES = main.c
+          OBJFILES = $(CFILES:.c=.o)
+          
+          all: $(ROMNAME).sfc
+          EOF
           
       - name: Compile ROM
         run: |
           export PVSNESLIB_HOME=$(pwd)/pvsneslib
           make
+          ls -la
+          find . -name "*.sfc"
           
       - name: Upload Finished ROM
         uses: actions/upload-artifact@v4
         with:
           name: pvz-snes-rom
-          path: "*.sfc"
+          path: |
+            *.sfc
+            **/*.sfc
