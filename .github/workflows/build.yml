@@ -56,11 +56,11 @@ jobs:
           '$(error "PVSNESLIB_HOME is not set")' \
           'endif' \
           '' \
-          'include ${PVSNESLIB_HOME}/devkitsnes/snes_rules' \
-          '' \
           'ROMNAME = pvz' \
           'CFILES = main.c' \
           'OBJFILES = $(CFILES:.c=.o)' \
+          '' \
+          'include ${PVSNESLIB_HOME}/devkitsnes/snes_rules' \
           '' \
           'all: $(ROMNAME).sfc' > Makefile
           
