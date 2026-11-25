@@ -19,6 +19,7 @@ jobs:
         run: |
           cat << 'EOF' > main.c
           #include <snes.h>
+          #include <stdlib.h>
 
           #define LANES 3
           #define COLS 8
@@ -50,13 +51,14 @@ jobs:
               setMode(BG_MODE1, 0);
               bgSetDisable(1); bgSetDisable(2);
               
-              // --- FIX: CREATE VISIBLE SPRITES ---
+              // --- CREATE VISIBLE SPRITES ---
               u8 dummy_tiles[128];
-              for(i=0; i<128; i++) dummy_tiles[i] = 0xFF; // Solid 16x16 box
+              for(i=0; i<128; i++) dummy_tiles[i] = 0xFF; 
               u16 dummy_pal[16];
               for(i=0; i<16; i++) dummy_pal[i] = 0;
               
-              oamInitGfxAttr(OBJ_SIZE16, OBJ_SIZE16);
+              // FIX: OBJ_SIZE16_L32 is the correct hardware macro
+              oamInitGfxAttr(OBJ_SIZE16_L32, OBJ_SIZE16_L32);
               oamInitGfxSet(dummy_tiles, 128, dummy_pal, 16, 0, 0);
 
               // Set colors for palettes (128 is the CGRAM offset for sprites)
@@ -65,9 +67,7 @@ jobs:
               setPaletteColor(128 + 32 + 1, RGB5(0, 0, 31));   // Palette 2 (Zombies): Blue
               setPaletteColor(128 + 48 + 1, RGB5(31, 31, 0));  // Palette 3 (Peas): Yellow
 
-              // Set background to dark green
               setPaletteColor(0, RGB5(0, 8, 0)); 
-              // Set text color to white
               setPaletteColor(1, RGB5(31, 31, 31));
               consoleDrawText(1, 1, "SUN: 100");
 
