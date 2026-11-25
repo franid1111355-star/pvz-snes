@@ -54,8 +54,10 @@ jobs:
               // CREATE VISIBLE SPRITES
               u8 dummy_tiles[128];
               for(i=0; i<128; i++) dummy_tiles[i] = 0x11; // Use Color 1
-              u16 dummy_pal[16];
-              for(i=0; i<16; i++) dummy_pal[i] = 0;
+              
+              // FIX: Palette must be u8* to match the function signature
+              u8 dummy_pal[32];
+              for(i=0; i<32; i++) dummy_pal[i] = 0;
               
               oamInitGfxSet(dummy_tiles, 128, dummy_pal, 16, 0, 0, OBJ_SIZE16_L32);
 
@@ -70,8 +72,7 @@ jobs:
               setPaletteColor(128 + 32 + 1, RGB5(0, 0, 31));   // Palette 2 (Zombies): Blue
               setPaletteColor(128 + 48 + 1, RGB5(31, 31, 0));  // Palette 3 (Peas): Yellow
 
-              // Clear the screen and draw text
-              consoleClear();
+              // FIX: Removed consoleClear() and just draw the text
               consoleDrawText(1, 1, "SUN: 100");
 
               for(l=0; l<LANES; l++) {
@@ -202,8 +203,7 @@ jobs:
           
           cat << 'EOF' > data.asm
           .include "hdr.asm"
-          .section ".rodata"
-          .ENDS
+          .empty
           EOF
           
           cat << 'EOF' > Makefile
