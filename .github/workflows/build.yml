@@ -51,23 +51,27 @@ jobs:
               setMode(BG_MODE1, 0);
               bgSetDisable(1); bgSetDisable(2);
               
-              // --- CREATE VISIBLE SPRITES ---
+              // CREATE VISIBLE SPRITES
               u8 dummy_tiles[128];
-              for(i=0; i<128; i++) dummy_tiles[i] = 0xFF; 
+              for(i=0; i<128; i++) dummy_tiles[i] = 0x11; // Use Color 1
               u16 dummy_pal[16];
               for(i=0; i<16; i++) dummy_pal[i] = 0;
               
-              // FIX: 7th parameter is OBJ_SIZE16_L32
               oamInitGfxSet(dummy_tiles, 128, dummy_pal, 16, 0, 0, OBJ_SIZE16_L32);
 
-              // Set colors for palettes (128 is the CGRAM offset for sprites)
+              // Set Background to Black
+              setPaletteColor(0, RGB5(0, 0, 0)); 
+              // Set Text to White
+              setPaletteColor(1, RGB5(31, 31, 31)); 
+
+              // Set colors for sprite palettes
               setPaletteColor(128 + 1, RGB5(31, 31, 31));  // Palette 0 (Cursor): White
               setPaletteColor(128 + 16 + 1, RGB5(31, 0, 0));   // Palette 1 (Plants): Red
               setPaletteColor(128 + 32 + 1, RGB5(0, 0, 31));   // Palette 2 (Zombies): Blue
               setPaletteColor(128 + 48 + 1, RGB5(31, 31, 0));  // Palette 3 (Peas): Yellow
 
-              setPaletteColor(0, RGB5(0, 8, 0)); 
-              setPaletteColor(1, RGB5(31, 31, 31));
+              // Clear the screen and draw text
+              consoleClear();
               consoleDrawText(1, 1, "SUN: 100");
 
               for(l=0; l<LANES; l++) {
@@ -95,12 +99,12 @@ jobs:
                   }
 
                   spawnTimer++;
-                  if(spawnTimer > 120) {
+                  if(spawnTimer > 180) {
                       spawnTimer = 0;
                       for(i=0; i<MAX_ZOMBIES; i++) {
                           if(!zombies[i].active) {
                               zombies[i].active = 1;
-                              zombies[i].lane = (spawnTimer/120) % LANES;
+                              zombies[i].lane = rand() % LANES;
                               zombies[i].x = 240;
                               zombies[i].hp = 100;
                               break;
