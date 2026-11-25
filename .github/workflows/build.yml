@@ -12,8 +12,8 @@ jobs:
         
       - name: Download PVSnesLib
         run: |
-          wget https://github.com/alekmaul/pvsneslib/releases/download/v3.6.0/pvsneslib_360_linux.tar.gz
-          tar -xzf pvsneslib_360_linux.tar.gz
+          wget https://github.com/alekmaul/pvsneslib/releases/download/4.6.0/pvsneslib_460_64b_linux_release.zip
+          unzip pvsneslib_460_64b_linux_release.zip
           
       - name: Generate Game Files Automatically
         run: |
