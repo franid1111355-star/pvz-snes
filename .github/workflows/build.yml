@@ -36,28 +36,26 @@ jobs:
           }
           EOF
           
-          echo "" > data.asm
-          
-          cat << 'EOF' > Makefile
-          ifeq ($(strip $(PVSNESLIB_HOME)),)
-          $(error "PVSNESLIB_HOME is not set")
-          endif
-          
-          ROMNAME = pvz
-          include ${PVSNESLIB_HOME}/devkitsnes/snes_rules
-          
-          CFILES = main.c
-          OBJFILES = $(CFILES:.c=.o)
-          
-          all: $(ROMNAME).sfc
+          cat << 'EOF' > hdr.asm
+          .MEMORYMAP
+          DEFAULTSLOT 0
+          SLOTSIZE $8000
+          SLOT 0 $8000
+          .ENDME
+          .ROMBANKSIZE $8000
+          .ROMBANKS 1
           EOF
+          
+          cat << 'EOF' > data.asm
+          .include "hdr.asm"
+          .section ".rodata"
+          EOF
+          
+          printf 'ROMNAME = pvz\nCFILES = main.c\ninclude ${PVSNESLIB_HOME}/devkitsnes/snes_rules\n' > Makefile
           
       - name: Compile ROM
         run: |
           export PVSNESLIB_HOME=$(pwd)/pvsneslib
-          echo "--- PRINTING MAKEFILE FOR DEBUGGING ---"
-          cat Makefile
-          echo "---------------------------------------"
           make
           
       - name: Upload Finished ROM
